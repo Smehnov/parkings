@@ -6,7 +6,17 @@ import cv2 as cv2
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
+import json
 
+users = {
+    "che": "TbCpGvnLyf",
+    "alex": "qwerty!"
+}
+
+
+def check_user_data(username, password):
+    # тут база данных вообще должна быть, токены все такое
+    return users.get(username) == password
 
 
 # Create your views here.
@@ -15,50 +25,12 @@ parking_top_marks = [[i * 70, 180, (i + 1) * 70, 300] for i in range(14)] + [[i 
                                                                              range(14)] + [
                         [1100, i * 60 + 200, 1250, (i + 1) * 60 + 250] for i in range(15)]
 # [[i*70,240,(i+1)*70,300] for i in range(14)] + [[i*70,390,(i+1)*70,450] for i in range(14)]
+parkings = {}
 
-parkings = {
-    "parnas3": {
+with open('parkings.json') as json_file:
+    parkings = json.load(json_file)
 
-        "file": "./images/parnas3.jpg",
-        "latitude": 112,
-        "longitude": 100,
-        "marks": [
-            [200, 720, 260, 620],
-
-            [50, 780, 100, 900],
-            [650, 620, 720, 720],
-
-            [950, 800, 1050, 900],
-            [900, 700, 1000, 800],
-            [850, 600, 950, 700],
-            [800, 500, 900, 600],
-            [750, 420, 850, 500],
-            [850, 400, 920, 460],
-            [920, 400, 1000, 360],
-            [830, 400, 910, 360],
-
-            [920, 450, 1000, 410],
-
-            [740, 400, 780, 360],
-            [720, 360, 760, 330],
-
-            [680, 310, 740, 270],
-
-            [100, 500, 200, 450],
-            [120, 450, 230, 400],
-
-        ]
-    },
-
-    "parking-top": {
-        "file": "./images/parking_top1.jpeg",
-        "latitude": 112,
-        "longitude": 100,
-        "marks": parking_top_marks
-
-    }
-
-}
+print(parkings)
 
 
 def process_camera(cam):
@@ -123,11 +95,8 @@ def send_email_to_admin(sender_login, error_type, sender_message):
     server = smtplib.SMTP('smtp.gmail.com: 587')
 
     server.starttls()
-
     server.login(msg['From'], "")
-
     server.sendmail(msg['From'], msg['To'], msg.as_string())
-
     server.quit()
 
     print("successfully sent email to %s:" % (msg['To']))
@@ -135,6 +104,9 @@ def send_email_to_admin(sender_login, error_type, sender_message):
 
 
 def email(request):
+    data = request.body
+    if request.method == 'POST':
+        send_email_to_admin(data['login'], data['err_type'], data['message'])
     return JsonResponse({
         "result": "ok"
     })
