@@ -110,7 +110,7 @@ def email(request):
     return JsonResponse({
         "result": "ok"
     })
-
+#Данные нужно кэшировать и обновлять раз в n минут
 
 def get_parkings(request):
     parks = process_all_cameras()
