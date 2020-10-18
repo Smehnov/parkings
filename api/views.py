@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-import numpy as np
 # import tensorflow as tf
 import cv2 as cv2
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import json
+
 
 users = {
     "che": "TbCpGvnLyf",
