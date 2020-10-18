@@ -111,11 +111,10 @@ def process_all_cameras():
 
 
 def send_email_to_admin(sender_login, error_type, sender_message):
-    # TODO stmp to admin email
     msg = MIMEMultipart()
 
-    message = "Thank you"
-    password = "your_password"
+    message = sender_message
+    password = "pass"
     msg['From'] = "client@parcin.com"
     msg['To'] = "support@parcin.com"
     msg['Subject'] = f"{error_type}"
